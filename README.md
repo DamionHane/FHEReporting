@@ -1,8 +1,5 @@
 # 🔐 FHE Anonymous Reporting System
 
-[![Tests](https://github.com/YOUR_USERNAME/FHEReporting/workflows/Tests/badge.svg)](https://github.com/YOUR_USERNAME/FHEReporting/actions)
-[![Coverage](https://github.com/YOUR_USERNAME/FHEReporting/workflows/Coverage/badge.svg)](https://github.com/YOUR_USERNAME/FHEReporting/actions)
-[![Code Quality](https://github.com/YOUR_USERNAME/FHEReporting/workflows/Code%20Quality/badge.svg)](https://github.com/YOUR_USERNAME/FHEReporting/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.24-blue.svg)](https://soliditylang.org/)
 [![Hardhat](https://img.shields.io/badge/Hardhat-2.19.0-yellow.svg)](https://hardhat.org/)
