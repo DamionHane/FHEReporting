@@ -1,0 +1,43 @@
+{
+  "name": "anonymous-reporting-system",
+  "version": "1.0.0",
+  "description": "Privacy-focused anonymous reporting platform using FHE encryption with React",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "compile": "npx hardhat compile",
+    "deploy": "npx hardhat run scripts/deploy.js --network sepolia",
+    "test": "npx hardhat test",
+    "node": "npx hardhat node"
+  },
+  "keywords": [
+    "blockchain",
+    "anonymous",
+    "reporting",
+    "privacy",
+    "fhe",
+    "zama",
+    "react"
+  ],
+  "author": "FHEVM Community",
+  "license": "MIT",
+  "dependencies": {
+    "@fhevm-template/sdk": "workspace:*",
+    "@fhevm/solidity": "^0.7.0",
+    "ethers": "^6.8.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "hardhat": "^2.19.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8"
+  }
+}
