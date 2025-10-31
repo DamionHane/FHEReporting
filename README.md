@@ -1,18 +1,41 @@
-# 🔐 Anonymous Reporting System
+# 🔐 FHE Anonymous Reporting System
 
-[![Tests](https://github.com/YOUR_USERNAME/anonymous-reporting-system/workflows/Tests/badge.svg)](https://github.com/YOUR_USERNAME/anonymous-reporting-system/actions)
-[![Coverage](https://github.com/YOUR_USERNAME/anonymous-reporting-system/workflows/Coverage/badge.svg)](https://github.com/YOUR_USERNAME/anonymous-reporting-system/actions)
-[![Code Quality](https://github.com/YOUR_USERNAME/anonymous-reporting-system/workflows/Code%20Quality/badge.svg)](https://github.com/YOUR_USERNAME/anonymous-reporting-system/actions)
-[![codecov](https://codecov.io/gh/YOUR_USERNAME/anonymous-reporting-system/branch/main/graph/badge.svg)](https://codecov.io/gh/YOUR_USERNAME/anonymous-reporting-system)
+[![Tests](https://github.com/YOUR_USERNAME/FHEReporting/workflows/Tests/badge.svg)](https://github.com/YOUR_USERNAME/FHEReporting/actions)
+[![Coverage](https://github.com/YOUR_USERNAME/FHEReporting/workflows/Coverage/badge.svg)](https://github.com/YOUR_USERNAME/FHEReporting/actions)
+[![Code Quality](https://github.com/YOUR_USERNAME/FHEReporting/workflows/Code%20Quality/badge.svg)](https://github.com/YOUR_USERNAME/FHEReporting/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.24-blue.svg)](https://soliditylang.org/)
 [![Hardhat](https://img.shields.io/badge/Hardhat-2.19.0-yellow.svg)](https://hardhat.org/)
 
 **Privacy-preserving whistleblowing platform powered by Zama FHEVM, enabling secure anonymous reporting with on-chain encrypted data.**
 
-🌐 **[Live Demo](https://anonymous-reporting.vercel.app/)** | 📺 **[Video Demo](https://youtu.be/DEMO_VIDEO_ID)** | 📄 **[Documentation](./docs/)**
+🌐 **[Live Demo](https://fhe-reporting.vercel.app/)** | 📺 **Video Demo**: Download `demo.mp4` to watch | 📄 **[GitHub Repository](https://github.com/YOUR_USERNAME/FHEReporting)**
 
 Built for the **Zama FHE Challenge** - demonstrating practical privacy-preserving applications using Fully Homomorphic Encryption.
+
+---
+
+## 💡 Core Concept
+
+This is a **privacy-focused anonymous reporting platform** built with Fully Homomorphic Encryption (FHE). The system enables whistleblowers to submit confidential reports about violations while maintaining complete privacy through on-chain encryption.
+
+### What is FHE?
+
+**Fully Homomorphic Encryption (FHE)** allows computations to be performed on encrypted data without ever decrypting it. This revolutionary technology ensures:
+
+- **Complete Privacy**: Report details remain encrypted on the blockchain
+- **Selective Access**: Only authorized investigators can decrypt assigned reports
+- **Computation on Encrypted Data**: Statistics and analytics work on encrypted values
+- **Zero Information Leakage**: No plaintext data is ever exposed on-chain
+
+### Anonymous Reporting System
+
+A decentralized whistleblowing platform that protects reporter identity while maintaining transparency and accountability:
+
+- **For Whistleblowers**: Submit violation reports anonymously without fear of retaliation
+- **For Investigators**: Access encrypted reports securely with proper authorization
+- **For Organizations**: Maintain compliance and transparency with immutable audit trails
+- **For Society**: Enable safe reporting of corruption, fraud, safety violations, and discrimination
 
 ---
 
@@ -33,12 +56,17 @@ Built for the **Zama FHE Challenge** - demonstrating practical privacy-preservin
 
 ## 🏗️ Architecture
 
+### System Overview
+
 ```
-Frontend (HTML5 + Vanilla JS)
-├── MetaMask wallet integration
-├── Client-side FHE encryption preparation
+Frontend (React 18 + Vite + TypeScript)
+├── Modern React component architecture
+├── FHEVM SDK integration (@fhevm-template/sdk)
+├── MetaMask wallet integration via ethers.js
+├── React hooks for encryption (useEncrypt, useDecrypt)
 ├── Real-time encrypted report submission
-└── Investigation dashboard for authorized users
+├── Investigation dashboard for authorized users
+└── Type-safe development with TypeScript
         ↓
 Smart Contract (Solidity 0.8.24)
 ├── Encrypted storage (euint8, euint32, ebool, eaddress)
@@ -80,84 +108,374 @@ Investigator
 Resolution (Resolved/Dismissed)
 ```
 
+### Privacy Model
+
+#### What's Private (Encrypted On-Chain)
+
+- **Reporter Identity** - Encrypted as `eaddress`, only decryptable by authority
+- **Report Category** - Encrypted as `euint8`, prevents category-based tracking
+- **Submission Timestamp** - Encrypted as `euint32`, hides temporal patterns
+- **Anonymity Flag** - Encrypted as `ebool`, protects reporter choice
+- **Investigation Notes** - Encrypted strings accessible only to assigned investigator
+
+#### What's Public (Transparent On-Chain)
+
+- **Report Status** - Current state (Submitted, Under Investigation, Resolved, Dismissed)
+- **Assigned Investigator** - Address of investigator handling the report
+- **Total Report Count** - System-wide statistics for transparency
+- **Resolution Metrics** - Resolved/dismissed counts for accountability
+
+#### Decryption Permissions
+
+```
+Authority (Contract Owner)
+├── Can decrypt all report data
+├── Can assign investigators
+└── Can access investigation notes
+
+Authorized Investigators
+├── Can decrypt only assigned reports
+├── Can update status of assigned reports
+└── Can add encrypted investigation notes
+
+Reporters
+├── Can submit encrypted reports
+└── Cannot decrypt other reports
+```
+
+---
+
+## 🛠️ Technology Stack
+
+### Frontend Technologies
+
+#### Core Framework
+- **React 18.2** - Modern component-based UI library
+- **TypeScript 5.3** - Type-safe development
+- **Vite 5.0** - Fast build tool and dev server
+  - Hot Module Replacement (HMR)
+  - Optimized production builds
+  - Native ES modules support
+
+#### React Component Structure
+```
+anonymous-reporting/src/
+├── App.tsx                      # Main application with FhevmProvider
+├── main.tsx                     # React entry point
+├── index.css                    # Global styles
+├── vite-env.d.ts               # Vite type definitions
+└── components/
+    ├── Header.tsx              # Application header
+    ├── Tabs.tsx                # Navigation tabs
+    ├── ConnectionStatus.tsx    # Wallet connection status
+    ├── ReportTab.tsx           # Report submission (uses useEncrypt)
+    ├── TrackTab.tsx            # Report tracking
+    ├── InvestigateTab.tsx      # Investigation panel (uses useDecrypt)
+    └── StatsTab.tsx            # Statistics dashboard
+```
+
+#### FHEVM SDK Integration
+- **@fhevm-template/sdk** - Universal FHEVM SDK
+  - `FhevmProvider` - React context provider for FHE functionality
+  - `useEncrypt` - React hook for encrypting data
+  - `useDecrypt` - React hook for decrypting data (with EIP-712 signatures)
+  - `useFhevm` - Core hook for FHEVM client access
+  - Framework-agnostic core with optional React hooks
+
+#### Web3 Integration
+- **ethers.js 6.8** - Ethereum interaction library
+  - Wallet connection via MetaMask
+  - Contract interaction
+  - Transaction signing
+  - EIP-712 typed data signatures
+
+### Smart Contract Technologies
+
+- **Solidity 0.8.24** - Smart contract language
+- **Hardhat 2.19** - Development environment
+  - Compilation
+  - Testing framework
+  - Deployment scripts
+  - Network configuration
+- **@fhevm/solidity 0.7.0** - Zama FHE libraries
+  - `euint8` - Encrypted 8-bit unsigned integers
+  - `euint32` - Encrypted 32-bit unsigned integers
+  - `ebool` - Encrypted booleans
+  - `eaddress` - Encrypted addresses
+  - `TFHE` library for FHE operations
+
+### Build & Development Tools
+
+#### Package Management
+- **npm workspaces** - Monorepo package management
+- **Workspace dependencies** - Local package linking
+
+#### Code Quality
+- **TypeScript** - Static type checking
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+
+#### Build Configuration
+- **vite.config.ts** - Vite configuration
+  - React plugin
+  - Port configuration (3001)
+  - Build optimization
+- **tsconfig.json** - TypeScript configuration
+  - ES2020 target
+  - React JSX
+  - Strict type checking
+
+### Deployment & Hosting
+
+- **Vercel** - Frontend deployment platform
+  - Serverless functions
+  - Automatic deployments
+  - CDN distribution
+- **Sepolia Testnet** - Ethereum test network for contracts
+  - FHEVM support
+  - Test ETH from faucets
+  - Contract verification on Etherscan
+
+### Testing & Quality Assurance
+
+- **Hardhat Test** - Smart contract testing
+  - Unit tests for all contract functions
+  - Integration tests for workflows
+  - Coverage reports
+- **Jest** (Optional) - JavaScript/TypeScript testing
+- **React Testing Library** (Optional) - Component testing
+
+### Key Dependencies
+
+#### Frontend Dependencies
+```json
+{
+  "@fhevm-template/sdk": "workspace:*",
+  "@fhevm/solidity": "^0.7.0",
+  "ethers": "^6.8.0",
+  "react": "^18.2.0",
+  "react-dom": "^18.2.0"
+}
+```
+
+#### Development Dependencies
+```json
+{
+  "@types/react": "^18.2.0",
+  "@types/react-dom": "^18.2.0",
+  "@vitejs/plugin-react": "^4.2.1",
+  "typescript": "^5.3.3",
+  "vite": "^5.0.8"
+}
+```
+
+#### Contract Dependencies
+```json
+{
+  "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+  "hardhat": "^2.19.0",
+  "dotenv": "^16.3.1"
+}
+```
+
+### Architecture Highlights
+
+#### Component-Based Architecture
+- **Modular Components** - Each tab is a separate React component
+- **Props & State Management** - React hooks for state
+- **Type Safety** - Full TypeScript coverage
+- **Reusable Logic** - Custom hooks from SDK
+
+#### Encryption Flow
+```typescript
+// In ReportTab.tsx
+import { useEncrypt } from '@fhevm-template/sdk';
+
+const { encryptValue, isEncrypting } = useEncrypt();
+
+// Encrypt category
+const encryptedCategory = await encryptValue(
+  parseInt(category),
+  { type: 'euint8' }
+);
+
+// Encrypt anonymous flag
+const encryptedAnonymous = await encryptValue(
+  anonymous,
+  { type: 'ebool' }
+);
+```
+
+#### Decryption Flow
+```typescript
+// In InvestigateTab.tsx
+import { useDecrypt } from '@fhevm-template/sdk';
+
+const { decrypt } = useDecrypt();
+
+// Decrypt report data with EIP-712 signature
+const categoryValue = await decrypt({
+  contractAddress,
+  userAddress,
+  handle: categoryHandle,
+  signer
+});
+```
+
+### Why These Technologies?
+
+#### React + Vite
+- ⚡ **Fast Development** - Instant HMR and optimized builds
+- 🎯 **Modern Tooling** - Latest JavaScript/TypeScript features
+- 📦 **Small Bundle Size** - Tree-shaking and code splitting
+- 🔧 **Developer Experience** - Great debugging and tooling
+
+#### TypeScript
+- 🛡️ **Type Safety** - Catch errors at compile time
+- 📝 **Better IDE Support** - Autocomplete and inline documentation
+- 🔍 **Refactoring** - Safe code refactoring
+- 📚 **Self-Documenting** - Types serve as documentation
+
+#### FHEVM SDK
+- 🎨 **Wagmi-like API** - Familiar patterns for Web3 developers
+- 🔌 **Framework Agnostic** - Core works everywhere
+- 🪝 **React Hooks** - Native React integration
+- 📦 **All-in-One** - Single dependency for FHE
+
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- **Node.js** >= 18.x
-- **MetaMask** wallet
-- **Sepolia ETH** - Get from [Sepolia Faucet](https://sepoliafaucet.com/)
+- Node.js >= 18.x
+- npm or yarn
+- MetaMask or similar Web3 wallet
+- Sepolia testnet ETH (get from [faucet](https://sepoliafaucet.com/))
 
-### Installation
+### Installation Steps
 
-```bash
-# Clone repository
-git clone https://github.com/YOUR_USERNAME/anonymous-reporting-system.git
-cd anonymous-reporting-system
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/FHEReporting.git
+   cd FHEReporting
+   ```
 
-# Install dependencies
-npm install
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-# Configure environment
-cp .env.example .env
-# Edit .env with your private key and RPC URL
-```
+3. **Configure environment variables**
+   ```bash
+   cp .env.example .env
+   ```
 
-### Setup Environment
+   Edit `.env` and add:
+   - `PRIVATE_KEY`: Your wallet private key
+   - `SEPOLIA_RPC_URL`: Infura or Alchemy Sepolia RPC endpoint
+   - `ETHERSCAN_API_KEY`: For contract verification
 
-```env
-# Network Configuration
-SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID
+4. **Compile contracts**
+   ```bash
+   npm run compile
+   ```
 
-# Deployment Account
-PRIVATE_KEY=your_private_key_here
+5. **Run tests**
+   ```bash
+   npm test
+   ```
 
-# Contract Verification
-ETHERSCAN_API_KEY=your_etherscan_api_key_here
+6. **Deploy to Sepolia**
+   ```bash
+   npm run deploy
+   ```
 
-# Gas Configuration
-GAS_PRICE=auto
-GAS_LIMIT=8000000
-```
+7. **Start the React development server** (in anonymous-reporting directory)
+   ```bash
+   cd anonymous-reporting
+   npm run dev
+   ```
 
-### Compile and Test
+   The application will be available at `http://localhost:5173`
 
-```bash
-# Compile contracts
-npm run compile
+   Or start from root:
+   ```bash
+   npm run dev
+   ```
 
-# Run test suite (55 tests)
-npm test
+8. **Build for production**
+   ```bash
+   cd anonymous-reporting
+   npm run build
+   ```
 
-# Run with coverage (95% coverage)
-npm run test:coverage
+   Build output will be in the `dist/` directory
 
-# Check gas usage
-npm run test:gas
-```
+---
 
-### Deploy to Sepolia
+## 🎬 Demo
 
-```bash
-# Deploy contract
-npm run deploy
+### Live Application
 
-# Verify on Etherscan
-npm run verify
+Visit the deployed application: **[https://fhe-reporting.vercel.app/](https://fhe-reporting.vercel.app/)**
 
-# Interact with deployed contract
-npm run interact
-```
+### Video Demonstration
 
-### Start Frontend
+📺 **Demo Video**: The file `demo.mp4` in this repository contains a complete demonstration of the system. Download it to watch the full walkthrough.
 
-```bash
-# Start development server
-npm run dev
-# Open http://localhost:3000
-```
+**Note**: The video file cannot be viewed directly in the browser due to size constraints. Please download `demo.mp4` from the repository to view the demonstration.
+
+**Demo Contents**:
+- System overview and architecture
+- Anonymous report submission
+- Investigator authorization
+- Encrypted data handling
+- Status updates and resolution workflow
+- Privacy and security features
+
+---
+
+## 💻 Tech Stack Summary
+
+### Smart Contracts
+
+- **Solidity** 0.8.24 - Smart contract language
+- **Zama FHEVM** - Fully Homomorphic Encryption
+- **@fhevm/solidity** ^0.7.0 - FHE library
+- **Hardhat** 2.19.0 - Development framework
+- **Ethers.js** 6.8.0 - Blockchain interaction
+
+### Frontend (Updated to React)
+
+- **React** 18.2 - Modern component-based UI
+- **TypeScript** 5.3 - Type-safe development
+- **Vite** 5.0 - Fast build tool and HMR
+- **@fhevm-template/sdk** - Universal FHEVM SDK with React hooks
+  - `useEncrypt` / `useDecrypt` hooks
+  - `FhevmProvider` context
+- **Ethers.js** 6.8 - Web3 wallet integration
+- **MetaMask** - Wallet provider
+
+### Development Tools
+
+- **Hardhat Toolbox** - Comprehensive dev suite
+- **Hardhat Gas Reporter** - Gas usage analysis
+- **Solidity Coverage** - Test coverage (95%)
+- **Solhint** - Solidity linting
+- **ESLint** - JavaScript/TypeScript linting
+- **Prettier** - Code formatting
+- **Husky** - Git hooks for quality checks
+- **TypeScript Compiler** - Static type checking
+
+### CI/CD & Security
+
+- **GitHub Actions** - Automated testing
+- **Codecov** - Coverage reporting
+- **NPM Audit** - Dependency security
+- **Etherscan** - Contract verification
+
+> 📖 **See the comprehensive [Technology Stack](#-technology-stack) section above for detailed information about the React + Vite architecture, FHEVM SDK integration, and component structure.**
 
 ---
 
@@ -233,56 +551,6 @@ function getSystemStats() external view returns (
 )
 ```
 
-### Access Control Matrix
-
-| Function | Public | Reporter | Investigator | Authority |
-|----------|--------|----------|--------------|-----------|
-| Submit Report | ✅ | ✅ | ✅ | ✅ |
-| View Own Reports | ❌ | ✅ | ❌ | ✅ |
-| Assign Reports | ❌ | ❌ | ❌ | ✅ |
-| Update Status | ❌ | ❌ | ✅* | ✅ |
-| Add Investigators | ❌ | ❌ | ❌ | ✅ |
-| View All Stats | ✅ | ✅ | ✅ | ✅ |
-
-*Only for assigned reports
-
----
-
-## 🔐 Privacy Model
-
-### What's Private (Encrypted On-Chain)
-
-- **Reporter Identity** - Encrypted as `eaddress`, only decryptable by authority
-- **Report Category** - Encrypted as `euint8`, prevents category-based tracking
-- **Submission Timestamp** - Encrypted as `euint32`, hides temporal patterns
-- **Anonymity Flag** - Encrypted as `ebool`, protects reporter choice
-- **Investigation Notes** - Encrypted strings accessible only to assigned investigator
-
-### What's Public (Transparent On-Chain)
-
-- **Report Status** - Current state (Submitted, Under Investigation, Resolved, Dismissed)
-- **Assigned Investigator** - Address of investigator handling the report
-- **Total Report Count** - System-wide statistics for transparency
-- **Resolution Metrics** - Resolved/dismissed counts for accountability
-
-### Decryption Permissions
-
-```
-Authority (Contract Owner)
-├── Can decrypt all report data
-├── Can assign investigators
-└── Can access investigation notes
-
-Authorized Investigators
-├── Can decrypt only assigned reports
-├── Can update status of assigned reports
-└── Can add encrypted investigation notes
-
-Reporters
-├── Can submit encrypted reports
-└── Cannot decrypt other reports
-```
-
 ---
 
 ## 🌐 Live Deployment
@@ -296,7 +564,7 @@ Reporters
 
 ### Frontend Deployment
 
-**Live Demo**: [https://anonymous-reporting.vercel.app/](https://anonymous-reporting.vercel.app/)
+**Live Demo**: [https://fhe-reporting.vercel.app/](https://fhe-reporting.vercel.app/)
 **Platform**: Vercel
 **Auto-Deploy**: Enabled on main branch
 
@@ -307,10 +575,9 @@ Reporters
 ### For Reporters
 
 1. **Connect Wallet**
-   ```javascript
-   // MetaMask connection is automatic
-   await window.ethereum.request({ method: 'eth_requestAccounts' });
-   ```
+   - Visit the live demo site
+   - Connect MetaMask wallet
+   - Switch to Sepolia network
 
 2. **Submit Report**
    - Select category (Corruption, Fraud, Environmental, Safety, Discrimination, Other)
@@ -440,43 +707,6 @@ See [TESTING.md](./TESTING.md) for detailed test documentation.
 
 ---
 
-## 💻 Tech Stack
-
-### Smart Contracts
-
-- **Solidity** 0.8.24 - Smart contract language
-- **Zama FHEVM** - Fully Homomorphic Encryption
-- **@fhevm/solidity** ^0.7.0 - FHE library
-- **Hardhat** 2.19.0 - Development framework
-- **Ethers.js** 6.8.0 - Blockchain interaction
-
-### Frontend
-
-- **HTML5** - Semantic markup
-- **CSS3** - Modern styling with gradients
-- **Vanilla JavaScript** (ES6+) - No framework overhead
-- **Ethers.js** - Web3 wallet integration
-- **MetaMask** - Wallet provider
-
-### Development Tools
-
-- **Hardhat Toolbox** - Comprehensive dev suite
-- **Hardhat Gas Reporter** - Gas usage analysis
-- **Solidity Coverage** - Test coverage (95%)
-- **Solhint** - Solidity linting
-- **ESLint** - JavaScript linting
-- **Prettier** - Code formatting
-- **Husky** - Git hooks for quality checks
-
-### CI/CD & Security
-
-- **GitHub Actions** - Automated testing
-- **Codecov** - Coverage reporting
-- **NPM Audit** - Dependency security
-- **Etherscan** - Contract verification
-
----
-
 ## 📊 Performance Metrics
 
 ### Gas Costs (at 5 gwei, ETH @ $2000)
@@ -555,6 +785,13 @@ See [SECURITY.md](./SECURITY.md) for complete security documentation.
 ---
 
 ## 🔗 Links
+
+### Project Resources
+
+- **GitHub Repository**: [https://github.com/YOUR_USERNAME/FHEReporting](https://github.com/YOUR_USERNAME/FHEReporting)
+- **Live Demo**: [https://fhe-reporting.vercel.app/](https://fhe-reporting.vercel.app/)
+- **Video Demo**: Download `demo.mp4` from repository
+- **Contract on Etherscan**: [View Contract](https://sepolia.etherscan.io/address/0xF75CEB2cE1CFb4c8493c8aa9176a833973C428a6)
 
 ### Zama Resources
 
@@ -702,8 +939,6 @@ rm -rf node_modules package-lock.json
 npm install
 ```
 
-See [docs/troubleshooting.md](./docs/troubleshooting.md) for more solutions.
-
 ---
 
 ## 📄 License
@@ -713,7 +948,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](./LICENSE
 ```
 MIT License
 
-Copyright (c) 2025 Anonymous Reporting System
+Copyright (c) 2025 FHE Anonymous Reporting System
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files...
@@ -740,10 +975,9 @@ Built for the **Zama FHE Challenge** to demonstrate practical applications of pr
 
 ## 📞 Contact & Support
 
-- **GitHub Issues**: [Report bugs or request features](https://github.com/YOUR_USERNAME/anonymous-reporting-system/issues)
-- **Discussions**: [Join community discussions](https://github.com/YOUR_USERNAME/anonymous-reporting-system/discussions)
-- **Email**: security@anonymous-reporting.example (for security issues)
-- **Twitter**: [@YourProject](https://twitter.com/YourProject)
+- **GitHub Repository**: [https://github.com/YOUR_USERNAME/FHEReporting](https://github.com/YOUR_USERNAME/FHEReporting)
+- **Issues**: [Report bugs or request features](https://github.com/YOUR_USERNAME/FHEReporting/issues)
+- **Live Demo**: [https://fhe-reporting.vercel.app/](https://fhe-reporting.vercel.app/)
 
 ---
 
@@ -753,7 +987,7 @@ Built for the **Zama FHE Challenge** to demonstrate practical applications of pr
 
 *Built with Zama FHEVM for a more transparent and just society*
 
-[Live Demo](https://anonymous-reporting.vercel.app/) • [Documentation](./docs/) • [Report Issue](https://github.com/YOUR_USERNAME/anonymous-reporting-system/issues)
+[Live Demo](https://fhe-reporting.vercel.app/) • [GitHub](https://github.com/YOUR_USERNAME/FHEReporting) • [Video Demo](./demo.mp4)
 
 ---
 
